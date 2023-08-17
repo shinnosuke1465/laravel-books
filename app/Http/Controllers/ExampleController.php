@@ -7,10 +7,12 @@ use Illuminate\Http\Request;
 
 class ExampleController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         return view('welcome');
     }
-    public function example() {
+    public function example()
+    {
         //examplesテーブルから全てのデータを取得して変数に格納
         $examples = Example::all();
         // //idが1のものだけ絞り込んで取得
@@ -21,6 +23,6 @@ class ExampleController extends Controller
         // $examples = Example::whereIn('id', [1,2])->get();
 
         //DBから取得した値をcontrollerからviewに渡す(view/exampleのexamples変数に$examplesを配列で渡す)
-        return view('example',['examples' => $examples]);
+        return view('example', ['examples' => $examples]);
     }
 }
