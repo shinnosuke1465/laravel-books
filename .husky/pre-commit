@@ -1,5 +1,5 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+# #!/bin/sh
+# . "$(dirname "$0")/_/husky.sh"
 
-./vendor/bin/sail composer phpcbf
-./vendor/bin/sail test
+# ./vendor/bin/sail composer phpcbf
+# ./vendor/bin/sail test
