@@ -1,7 +1,7 @@
 <x-app-layout>
   <x-slot name="header">
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-      {{ __('Dashboard') }}
+      {{ __('本の管理') }}
     </h2>
   </x-slot>
 
@@ -26,8 +26,9 @@
                 <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">出版</th>
                 <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">読み終わった日</th>
                 <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">メモ</th>
-                <th class="w-10 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tr rounded-br"></th>
-              </tr>
+                <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100"></th>
+                <!-- <th class="w-10 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tr rounded-br"></th>
+              </tr> -->
             </thead>
             <tbody>
               @foreach($books as $book)
@@ -41,19 +42,16 @@
                     <td class="border-t-2 border-gray-200 px-4 py-3">{{ Carbon\Carbon::parse($book->read_at)->format('Y年n月j日') }}</td>
                     <!-- 適切な長さで文字を区切る -->
                     <td class="border-t-2 border-gray-200 px-4 py-3">{{ Str::limit($book->note, 40, $end='...') }}</td>
+                    <td class="border-t-2 border-gray-200 px-4 py-3">
+                    <button onclick="location.href='/book/detail/{{ $book->id }}'" class="text-sm shadow bg-gray-500 hover:bg-gray-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded">詳細</button>
+                    </td>
                 </tr>
               @endforeach
-              <tr>
-                <td class="border-t-2 border-gray-200 px-4 py-3">Business</td>
-                <td class="border-t-2 border-gray-200 px-4 py-3">36 Mb/s</td>
-                <td class="border-t-2 border-gray-200 px-4 py-3">40 GB</td>
-                <td class="border-t-2 border-gray-200 px-4 py-3">40 GB</td>
-                <td class="border-t-2 border-gray-200 px-4 py-3">40 GB</td>
-                <td class="border-t-2 border-gray-200 px-4 py-3">40 GB</td>
-                <td class="border-t-2 border-gray-200 px-4 py-3">40 GB</td>
-              </tr>
             </tbody>
           </table>
+
+          {{ $books->links() }}
+
           <!-- </div>
               <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
                 <a class="text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0">Learn More
