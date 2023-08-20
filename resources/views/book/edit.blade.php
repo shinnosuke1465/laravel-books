@@ -13,8 +13,7 @@
         <form class="w-full" action="{{ route('book.update') }}" method="POST">
                         @csrf
                         @method('PATCH')
-
-          <div>
+           <div>
             <div class="px-4 sm:px-0">
               <h3 class="text-base font-semibold leading-7 text-gray-900">本の詳細</h3>
             </div>
