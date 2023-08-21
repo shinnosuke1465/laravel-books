@@ -2,23 +2,54 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BookRequest;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use Validator;
+// use Validator;
 
 class BookController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        //examplesテーブルから全てのデータを取得して変数に格納
-        // $books = Book::all();
-        $book = Book::paginate(10);
+        // //booksテーブルから全てのデータを取得して変数に格納
+        // // $books = Book::all();
+        // $book = Book::paginate(10);
 
-        //DBから取得した値をcontrollerからviewに渡す(view/bookのbooks変数に$booksを配列で渡す)
-        return view('book.index', ['books' => $book]);
+        // //DBから取得した値をcontrollerからviewに渡す(view/bookのbooks変数に$booksを配列で渡す)
+        // return view('book.index', ['books' => $book]);
+
+        // $requestは検索した値が渡ってくる
+        //only...()の中で指定した値以外入ってこない
+        $input = $request->only('name', 'status', 'author', 'publication', 'note');
+        $books = Book::search($input)->orderBy('id', 'desc')->paginate(10);
+        //        $books = Book::paginate(10);
+
+        //booksテーブルから全てのpublication(出版)をグループ化して配列に詰め替える
+        //$publications=[出版名の配列]
+        $publications = Book::select('publication')->groupBy('publication')->pluck('publication');
+        $authors = Book::select('author')->groupBy('author')->pluck('author');
+        //        $statuses = Book::select('status')->groupBy('status')->pluck('status');
+
+        return view(
+            'book.index',
+            [
+                'books' => $books,
+                // selectboxの値
+                'publications' => $publications,
+                'authors' => $authors,
+                //'statuses' => $statuses,
+
+                // 検索する値
+                'name' => $input['name'] ?? '',
+                'publication' => $input['publication'] ?? '',
+                'author' => $input['author'] ?? '',
+                'status' => $input['status'] ?? '',
+                'note' => $input['note'] ?? '',
+            ]
+        );
     }
 
     //routerからurlで飛んできたidをうけとる
@@ -40,19 +71,9 @@ class BookController extends Controller
         return view('book.edit', ['book' => $book]);
     }
 
-    public function update(Request $request)
+    public function update(BookRequest $request)
     {
         try {
-
-            // NOTE: コントローラーに対してバリデーションを当てる方法
-//            $validated = Validator::make($request->all(), [
-//                'name' => 'required|max:255',
-//                'status' => ['required', Rule::in(BOOK::BOOK_STATUS_ARRAY)],
-//            ]);
-//
-//            if($validated->fails()) {
-//                return redirect()->route('book.edit', ['id' => $request->input('id')])->withErrors($validated)->withInput();
-//            }
 
             //以下のDBのupdateの文でどっかでエラーが発生したらcatchに飛ぶ処理
             DB::beginTransaction();
@@ -77,7 +98,8 @@ class BookController extends Controller
         }
     }
 
-    public function new(){
+    public function new()
+    {
         return view('book.new');
     }
 
