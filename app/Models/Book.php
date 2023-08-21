@@ -44,4 +44,48 @@ class Book extends Model
         self::BOOK_STATUS_DONE,
         self::BOOK_STATUS_WANT_READ,
     ];
+
+    // scope
+    // グローバルスコープ：モデルを利用する際に、毎回呼び出されるスコープ（where文とかのquery関数）
+    // ローカルスコープ：スコープを利用したい場合に、自身で都度呼び出すスコープ
+    // scopeは利用する際に含まない。大文字小文字もどちらでもOK。 Book::search();
+    // 第一引数は必ず$queryになる。
+    public function scopeSearch($query, $search)
+    {
+        //$searchは検索バーで検索された値。
+        //なければ''(空文字)を格納
+        $name = $search['name'] ?? '';
+        $status = $search['status'] ?? '';
+        $author = $search['author'] ?? '';
+        $publication = $search['publication'] ?? '';
+        $note = $search['note'] ?? '';
+
+        //when....$nameに値がセットされていた時以下の関数を実行する
+        //$対象の変数->where('対象のカラム名', 'like', "%{$キーワードを代入した変数}%")->get();
+
+        $query->when($name, function ($query, $name) {
+            $query->where('name', 'like', "%$name%");
+        });
+
+        $query->when($status, function ($query, $status) {
+            $query->where('status', $status);
+        });
+
+        $query->when($author, function ($query, $author) {
+            $query->where('author', $author);
+        });
+
+        $query->when($publication, function ($query, $publication) {
+            $query->where('publication', $publication);
+        });
+
+        $query->when($note, function ($query, $note) {
+            $query->where('note', 'like', "%$note%");
+        });
+
+        return $query;
+    }
+
+
+
 }
